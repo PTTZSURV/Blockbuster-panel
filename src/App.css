@@ -36,3 +36,43 @@
     transform: rotate(360deg);
   }
 }
+
+
+/* === VIBRANT DASHBOARD STYLING === */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%) no-repeat fixed;
+}
+
+.App-header {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.container-card {
+  background: white;
+  padding: 30px;
+  margin-top: 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.button-primary {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.button-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3);
+}
