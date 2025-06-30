@@ -1,94 +1,56 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
-import HomeCard from '../../components/HomeCard'
-import Typography from '@mui/joy/Typography';
-import HomeSurveyItem from '../../components/HomeSurveyItem';
-import { Card } from '@mui/joy';
-import Tabs from '../../components/ResponsiveAppBar'
 
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useAtom } from 'jotai';
-import { completedSurveys } from "../../state";
-import { userLoggedIn } from "../../state";
-import AlertCard from '../../components/AlertCard';
+import { completedSurveys, userLoggedIn } from "../../state";
+import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Home() {
-  const navigate = useNavigate()
-  const [doneSurveys,] = useAtom(completedSurveys)
-  const [loggedIn] = useAtom(userLoggedIn)
-  const [surveysData, setSurveysData] = useState([]);
-  const [surveysFiltered, setSurveysFiltered] = useState([]);
-
-
-  if (!loggedIn) {
-    navigate("/register")
-  }
+  const navigate = useNavigate();
+  const [doneSurveys] = useAtom(completedSurveys);
+  const [loggedIn] = useAtom(userLoggedIn);
 
   useEffect(() => {
-    fetch('https://victonictechnologies.github.io/SurveysDetails/surveys.json')
-      .then(response => response.json())
-      .then(data => {
-        setSurveysData(data.surveys)
-      });
-  }, []);
+    if (!loggedIn) navigate("/register");
+  }, [loggedIn, navigate]);
 
-  const mounted = useRef();
-  useEffect(() => {
-    if (!mounted.current) {
-      // do componentDidMount logic
-      mounted.current = true;
+  const stats = [
+    { title: "Total Earnings", value: "KES 5,240", color: "#ff4b2b" },
+    { title: "Completed Surveys", value: doneSurveys?.length || 0, color: "#36d1dc" },
+    { title: "Referrals", value: "23", color: "#ffc107" }
+  ];
 
-    } else {
-      if (doneSurveys.length >= 1) {
-        let tempList = surveysData
-        for (let x = 0; x < doneSurveys.length; x++) {
-          var Id1 = doneSurveys[x].surveyId
-
-          tempList = tempList.filter(item => {
-            return item.surveyId != Id1
-          })
-        }
-        setSurveysFiltered(tempList)
-      }
-    }
-  });
-
-
-
-
-
-
-
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    datasets: [{
+      label: 'Monthly Earnings',
+      data: [500, 1200, 900, 1800, 740],
+      backgroundColor: ['#ff416c', '#ff4b2b', '#36d1dc', '#5b86e5', '#ffc107']
+    }]
+  };
 
   return (
-    <div>
-      <Tabs />
-      <HomeCard />
-      <Card sx={{ mt: 5 }} variant="soft">
-        <Typography align="left" level="title-lg">
-          Surveys For You Today <AlertCard sx={{ml:1}}message={"Surveys are automaticaly filtered based on your location"} /> </Typography>
-        {
-          surveysFiltered.length > 1 ?
-            <div>
-              {
-                surveysFiltered.map((survey, index) => (
-                  <div key={index}>
-                    <HomeSurveyItem survey={survey} Id={survey.surveyId} />
-                  </div>
-                ))
-              }
-            </div>
-            :
-            <div>
-              {
-                surveysData.map((survey, index) => (
-                  <div key={index}>
-                    <HomeSurveyItem survey={survey} Id={survey.surveyId} />
-                  </div>
-                ))
-              }
-            </div>
-        }
-      </Card>
-    </div>
-  )
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom color="primary">Dashboard Overview</Typography>
+      <Grid container spacing={3}>
+        {stats.map((item, i) => (
+          <Grid item xs={12} md={4} key={i}>
+            <Paper elevation={3} sx={{ p: 2, background: item.color, color: "#fff", borderRadius: 2 }}>
+              <Typography variant="h6">{item.title}</Typography>
+              <Typography variant="h4">{item.value}</Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Box sx={{ mt: 5, background: "#fff", p: 3, borderRadius: 2, boxShadow: 2 }}>
+        <Typography variant="h5" mb={2}>Earnings Chart</Typography>
+        <Bar data={chartData} />
+      </Box>
+    </Box>
+  );
 }
