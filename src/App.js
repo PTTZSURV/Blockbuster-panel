@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import './App.css';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,6 +19,7 @@ import ReferralCode from './screens/auth/ReferralCode';
 function App() {
   return (
     <div className="App">
+      <div className="container-card">
       <CssBaseline />
       <Container fixed sx={{ my: 3 }} >
         <BrowserRouter>
@@ -39,7 +39,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Container>
-    </div>
+          </div>
   );
 }
 
